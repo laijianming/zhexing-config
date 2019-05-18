@@ -4,10 +4,94 @@ spring:
     - dev
 
 ---
+
+# \u7AEF\u53E3
+server:
+  port: 7777
 spring:
   profiles: dev  # 开发环境
+  datasource:
+    password: zhexing
+    url: jdbc:mysql://192.168.2.123:3333/zhexing?characterEncoding=UTF-8&useSSL=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+#   \u914D\u7F6E\u76D1\u63A7\u7EDF\u8BA1\u62E6\u622A\u7684filters\uFF0C\u53BB\u6389\u540E\u76D1\u63A7\u754C\u9762sql\u65E0\u6CD5\u7EDF\u8BA1\uFF0C'wall'\u7528\u4E8E\u9632\u706B\u5899
+    filters: stat,wall,log4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+    username: root
+  redis:
+    host: 129.204.212.52
+    port: 6379
+#    host: 192.168.2.123
+  zipkin:
+    enabled: true
+    base-url: http://192.168.2.127:9411/
+    locator:
+      discovery:
+        enabled: true
+    sender:
+      type: WEB
+  sleuth:
+    web:
+      client:
+        enabled: true
+    sampler:
+        # 默认的采样比率为0.1，不能看到所有请求数据
+        # 更改采样比率为1，就能看到所有的请求数据了，但是这样会增加接口调用延迟
+      probability: 1.0
+
+
+#对于rabbitMQ的支持
+
+#spring.rabbitmq.host=127.0.0.1
+#spring.rabbitmq.port=5672
+#spring.rabbitmq.username=guest
+#spring.rabbitmq.password=guest
+  rabbitmq:
+    host: 192.168.56.1
+    port: 5672
+    username: zhexing
+    password:  zhexing
+    publisher-confirms: true
+    virtual-host: /
   application:
-    name: dashboard config-dev
+    name: zhexing-social
+
+
+
+#开启驼峰命名
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    #    schema:
+    #      - classpath:department.sql
+#服务注册
+eureka:
+  client:
+    service-url:
+      defaultZone: http://192.168.2.121:8001/eureka/,http://192.168.2.122:8002/eureka/
+  instance:
+#    instance-id: zhexing-social-${random.int}  # 生产环境下使用
+    instance-id: zhexing-social
+    prefer-ip-address: true
+info:
+  app.name: ${spring.application.name}
+  author.name: jianming
+  build.version: ${project.version}
+
 
 ---
 spring:
