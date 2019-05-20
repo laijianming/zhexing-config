@@ -1,0 +1,6 @@
+spring: 
+  application:
+    name: zhexing-dashboard
+  profile: pro
+server:
+  port:9999
